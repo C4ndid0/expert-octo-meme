@@ -16,6 +16,8 @@ import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
 import { ProductService } from '../../../../demo/service/ProductService';
 import { Zero } from '@/types';
+import { UserService } from '@/service/userService';
+import { error } from 'console';
 
 /* @todo Used 'as any' for types here. Will fix in next version due to onSelectionChange event type issue. */
 const Crud = () => {
@@ -37,9 +39,19 @@ const Crud = () => {
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
+    const userService = new UserService();
 
     useEffect(() => {
         // ProductService.getProducts().then((data) => setProducts(data as any));
+        userService
+            .listAll()
+            .then((response) => {
+                console.log(response.data);
+                setUsers(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }, []);
 
     const openNew = () => {
