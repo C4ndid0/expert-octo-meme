@@ -5,22 +5,15 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
 import { FileUpload } from 'primereact/fileupload';
-import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { RadioButton, RadioButtonChangeEvent } from 'primereact/radiobutton';
-import { Rating } from 'primereact/rating';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
-import React, { useEffect, useRef, useState } from 'react';
-import { ProductService } from '../../../../demo/service/ProductService';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Zero } from '@/types';
 import { UserService } from '@/service/userService';
-import { error } from 'console';
 
-/* @todo Used 'as any' for types here. Will fix in next version due to onSelectionChange event type issue. */
-const Crud = () => {
+const User = () => {
     let emptyUser: Zero.User = {
         id: 0,
         name: '',
@@ -39,7 +32,7 @@ const Crud = () => {
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
-    const userService = new UserService();
+    const userService = useMemo(() => new UserService(), []);
 
     useEffect(() => {
         if (users.length == 0) {
@@ -53,7 +46,7 @@ const Crud = () => {
                     console.log(error);
                 });
         }
-    }, [users]);
+    }, [userService, users]);
 
     const openNew = () => {
         setUser(emptyUser);
@@ -153,27 +146,6 @@ const Crud = () => {
             });
     };
 
-    // const findIndexById = (id: string) => {
-    //     let index = -1;
-    //     for (let i = 0; i < (users as any)?.length; i++) {
-    //         if ((users as any)[i].id === id) {
-    //             index = i;
-    //             break;
-    //         }
-    //     }
-
-    //     return index;
-    // };
-
-    // const createId = () => {
-    //     let id = '';
-    //     let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    //     for (let i = 0; i < 5; i++) {
-    //         id += chars.charAt(Math.floor(Math.random() * chars.length));
-    //     }
-    //     return id;
-    // };
-
     const exportCSV = () => {
         dt.current?.exportCSV();
     };
@@ -182,39 +154,14 @@ const Crud = () => {
         setDeleteUsersDialog(true);
     };
 
-    const deleteSelectedUsers = () => {
-        // let _user = (users as any)?.filter((val: any) => !(selectedUsers as any)?.includes(val));
-        // setUsers(_user);
-        // setDeleteUsersDialog(false);
-        // setSelectedUsers(null);
-        // toast.current?.show({
-        //     severity: 'success',
-        //     summary: 'Successful',
-        //     detail: 'Users Deleted',
-        //     life: 3000
-        // });
-    };
-
-    // // const onCategoryChange = (e: RadioButtonChangeEvent) => {
-    // //     let _product = { ...product };
-    // //     _product['category'] = e.value;
-    // //     setProduct(_product);
-    // // };
+    const deleteSelectedUsers = () => {};
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: string) => {
         const val = (e.target && e.target.value) || '';
         let _user = { ...user };
-        (_user as any)[`${name}`] = val;
+        _user[`${name}`] = val;
         setUser(_user);
     };
-
-    // const onInputNumberChange = (e: InputNumberValueChangeEvent, name: string) => {
-    //     const val = e.value || 0;
-    //     let _product = { ...product };
-    //     _product[`${name}`] = val;
-
-    //     setProduct(_product);
-    // };
 
     const leftToolbarTemplate = () => {
         return (
@@ -426,4 +373,4 @@ const Crud = () => {
     );
 };
 
-export default Crud;
+export default User;
