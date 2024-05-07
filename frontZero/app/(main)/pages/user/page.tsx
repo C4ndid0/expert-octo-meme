@@ -12,6 +12,7 @@ import { classNames } from 'primereact/utils';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Zero } from '@/types';
 import { UserService } from '@/service/userService';
+import { error } from 'console';
 
 const User = () => {
     let emptyUser: Zero.User = {
@@ -27,7 +28,7 @@ const User = () => {
     const [deleteUserDialog, setDeleteUserDialog] = useState(false);
     const [deleteUsersDialog, setDeleteUsersDialog] = useState(false);
     const [user, setUser] = useState<Zero.User>(emptyUser);
-    const [selectedUsers, setSelectedUsers] = useState(null);
+    const [selectedUsers, setSelectedUsers] = useState<Zero.User[]>([]);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
@@ -154,7 +155,32 @@ const User = () => {
         setDeleteUsersDialog(true);
     };
 
-    const deleteSelectedUsers = () => {};
+    const deleteSelectedUsers = () => {
+        Promise.all(
+            selectedUsers.map(async (_user) => {
+                if (_user.id) {
+                    await userService.delete(_user.id);
+                }
+            })
+        )
+            .then((response) => {
+                setUsers([]);
+                setSelectedUsers([]);
+                setDeleteUsersDialog(false);
+                toast.current?.show({
+                    severity: 'success',
+                    summary: 'Successful',
+                    detail: 'Users Deleted'
+                });
+            })
+            .catch((error) => {
+                toast.current?.show({
+                    severity: 'error',
+                    summary: 'Error!',
+                    detail: 'Error at delete users' + error
+                });
+            });
+    };
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: string) => {
         const val = (e.target && e.target.value) || '';
