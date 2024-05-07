@@ -16,6 +16,7 @@ public class UserController {
     public UserController(UserService userService){
         this.userService = userService;
     }
+
     @GetMapping
     public List<UserDTO> getAllUsers(){
         return userService.listAll();
@@ -42,5 +43,4 @@ public class UserController {
         userService.delete(id);
         return ResponseEntity.ok().build();
     }
-
 }

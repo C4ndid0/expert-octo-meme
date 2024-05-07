@@ -1,6 +1,6 @@
 declare namespace Zero {
     type User = {
-        id?: number;
+        id: number;
         name: string;
         login: string;
         password: string;
