@@ -36,11 +36,10 @@ const User = () => {
     const userService = useMemo(() => new UserService(), []);
 
     useEffect(() => {
-        if (users.length == 0) {
+        if (users.length === 0) {
             userService
                 .listAll()
                 .then((response) => {
-                    console.log(response.data);
                     setUsers(response.data);
                 })
                 .catch((error) => {
