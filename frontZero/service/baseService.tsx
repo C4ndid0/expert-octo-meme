@@ -4,7 +4,7 @@ export const axiosInstace = axios.create({
     baseURL: process.env.NEXT_PUBLIC_ZERO_URL_API
 });
 
-export class BaseSevice {
+export class BaseService {
     url: string;
 
     constructor(url: string) {
