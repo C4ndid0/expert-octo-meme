@@ -1,6 +1,6 @@
-import { BaseSevice } from './baseService';
+import { BaseService } from './baseService';
 
-export class UserService extends BaseSevice {
+export class UserService extends BaseService {
     constructor() {
         super('/user');
     }
