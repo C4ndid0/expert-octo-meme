@@ -14,6 +14,7 @@ public class ResourceDTO {
 
     public ResourceDTO(){}
     public ResourceDTO(ResourceEntity resource){
+
         BeanUtils.copyProperties(resource, this);
     }
 
