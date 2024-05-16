@@ -11,5 +11,12 @@ declare namespace Zero {
         id: number;
         name: string;
         key: string;
+    };
+
+    type Profile = {
+        id: number;
+        description: string;
     }
+
+
 }

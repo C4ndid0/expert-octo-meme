@@ -11,73 +11,72 @@ import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Zero } from '@/types';
-import { ResourceService } from '@/service/ResourceService';
+import { ProfileService } from '@/service/ProfileService';
 import { error } from 'console';
 
-const Resource = () => {
-    let emptyResource: Zero.Resource = {
+const Profile = () => {
+    let emptyProfile: Zero.Profile = {
         id: 0,
-        name: '',
-        key: ''
+        description: ''
     };
 
-    const [resources, setResources] = useState<Zero.Resource[]>([]);
-    const [resourceDialog, setResourceDialog] = useState(false);
-    const [deleteResourceDialog, setDeleteResouceDialog] = useState(false);
-    const [deleteResourcesDialog, setDeleteResourcesDialog] = useState(false);
-    const [resource, setResource] = useState<Zero.Resource>(emptyResource);
-    const [selectedResources, setSelectedResources] = useState<Zero.Resource[]>([]);
+    const [profiles, setProfiles] = useState<Zero.Profile[]>([]);
+    const [profileDialog, setProfileDialog] = useState(false);
+    const [deleteProfileDialog, setDeleteProfileDialog] = useState(false);
+    const [deleteProfilesDialog, setDeleteProfilesDialog] = useState(false);
+    const [profile, setProfile] = useState<Zero.Profile>(emptyProfile);
+    const [selectedProfiles, setSelectedProfiles] = useState<Zero.Profile[]>([]);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
-    const resourceService = useMemo(() => new ResourceService(), []);
+    const profileService = useMemo(() => new ProfileService(), []);
 
     useEffect(() => {
-        if (resources.length === 0) {
-            resourceService
+        if (profiles.length === 0) {
+            profileService
                 .listAll()
                 .then((response) => {
-                    setResources(response.data);
+                    setProfiles(response.data);
                 })
                 .catch((error) => {
                     console.log(error);
                 });
         }
-    }, [resourceService, resources]);
+    }, [profileService, profiles]);
 
     const openNew = () => {
-        setResource(emptyResource);
+        setProfile(emptyProfile);
         setSubmitted(false);
-        setResourceDialog(true);
+        setProfileDialog(true);
     };
 
     const hideDialog = () => {
         setSubmitted(false);
-        setResourceDialog(false);
+        setProfileDialog(false);
     };
 
-    const hideDeleteResouceDialog = () => {
-        setDeleteResouceDialog(false);
+    const hideDeleteProfileDialog = () => {
+        setDeleteProfileDialog(false);
     };
 
-    const hideDeleteResourcesDialog = () => {
-        setDeleteResourcesDialog(false);
+    const hideDeleteProfilesDialog = () => {
+        setDeleteProfilesDialog(false);
     };
 
-    const saveResource = () => {
+    const saveProfile = () => {
         setSubmitted(true);
-        if (!resource.id) {
-            resourceService
-                .insert(resource)
+        if (!profile.id) {
+            profileService
+                .insert(profile)
                 .then((response) => {
-                    setResourceDialog(false);
-                    setResource(emptyResource);
-                    setResources([]);
+                    setProfileDialog(false);
+                    setProfile(emptyProfile);
+                    setProfiles([]);
                     toast.current?.show({
                         severity: 'success',
                         summary: 'Successful',
-                        detail: 'Resource Created'
+                        detail: 'Profile Created'
                     });
                 })
                 .catch((error) => {
@@ -85,20 +84,20 @@ const Resource = () => {
                     toast.current?.show({
                         severity: 'error',
                         summary: 'Error!',
-                        detail: 'Error at save resource' + error
+                        detail: 'Error at save profile' + error
                     });
                 });
         } else {
-            resourceService
-                .update(resource)
+            profileService
+                .update(profile)
                 .then((response) => {
-                    setResourceDialog(false);
-                    setResource(emptyResource);
-                    setResources([]);
+                    setProfileDialog(false);
+                    setProfile(emptyProfile);
+                    setProfiles([]);
                     toast.current?.show({
                         severity: 'success',
                         summary: 'Successful',
-                        detail: 'Resource Updated'
+                        detail: 'Profile Updated'
                     });
                 })
                 .catch((error) => {
@@ -106,40 +105,40 @@ const Resource = () => {
                     toast.current?.show({
                         severity: 'error',
                         summary: 'Error!',
-                        detail: 'Error at save resource' + error
+                        detail: 'Error at save profile' + error
                     });
                 });
         }
     };
 
-    const editResource = (resource: Zero.Resource) => {
-        setResource({ ...resource });
-        setResourceDialog(true);
+    const editProfile = (profile: Zero.Profile) => {
+        setProfile({ ...profile });
+        setProfileDialog(true);
     };
 
-    const confirmDeleteResource = (resource: Zero.Resource) => {
-        setResource(resource);
-        setDeleteResouceDialog(true);
+    const confirmDeletedProfile = (profile: Zero.Profile) => {
+        setProfile(profile);
+        setDeleteProfileDialog(true);
     };
 
-    const deleteResource = () => {
-        setResource(emptyResource);
-        setDeleteResouceDialog(false);
-        resourceService
-            .delete(resource.id)
+    const deleteProfile = () => {
+        setProfile(emptyProfile);
+        setDeleteProfileDialog(false);
+        profileService
+            .delete(profile.id)
             .then((response) => {
-                setResources([]);
+                setProfiles([]);
                 toast.current?.show({
                     severity: 'success',
                     summary: 'Successful',
-                    detail: 'Resource Deleted'
+                    detail: 'Profile Deleted'
                 });
             })
             .catch((error) => {
                 toast.current?.show({
                     severity: 'error',
                     summary: 'Error!',
-                    detail: 'Error at delete resource' + error
+                    detail: 'Error at delete profile' + error
                 });
             });
     };
@@ -149,41 +148,41 @@ const Resource = () => {
     };
 
     const confirmDeleteSelected = () => {
-        setDeleteResourcesDialog(true);
+        setDeleteProfilesDialog(true);
     };
 
-    const deleteSelectedResources = () => {
+    const deleteSelectedProfile = () => {
         Promise.all(
-            selectedResources.map(async (_resource) => {
-                if (_resource.id) {
-                    await resourceService.delete(_resource.id);
+            selectedProfiles.map(async (_profile) => {
+                if (_profile.id) {
+                    await profileService.delete(_profile.id);
                 }
             })
         )
             .then((response) => {
-                setResources([]);
-                setSelectedResources([]);
-                setDeleteResourcesDialog(false);
+                setProfiles([]);
+                setSelectedProfiles([]);
+                setDeleteProfilesDialog(false);
                 toast.current?.show({
                     severity: 'success',
                     summary: 'Successful',
-                    detail: 'Resources Deleted'
+                    detail: 'Profile Deleted'
                 });
             })
             .catch((error) => {
                 toast.current?.show({
                     severity: 'error',
                     summary: 'Error!',
-                    detail: 'Error at delete resources' + error
+                    detail: 'Error at delete profile' + error
                 });
             });
     };
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: string) => {
         const val = (e.target && e.target.value) || '';
-        let _resource = { ...resource };
-        _resource[`${name}`] = val;
-        setResource(_resource);
+        let _profile = { ...profile };
+        _profile[`${name}`] = val;
+        setProfile(_profile);
     };
 
     const leftToolbarTemplate = () => {
@@ -191,7 +190,7 @@ const Resource = () => {
             <React.Fragment>
                 <div className="my-2">
                     <Button label="New" icon="pi pi-plus" severity="success" className=" mr-2" onClick={openNew} />
-                    <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedResources || !(selectedResources as any).length} />
+                    <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedProfiles || !(selectedProfiles as any).length} />
                 </div>
             </React.Fragment>
         );
@@ -206,7 +205,7 @@ const Resource = () => {
         );
     };
 
-    const idBodyTemplate = (rowData: Zero.Resource) => {
+    const idBodyTemplate = (rowData: Zero.Profile) => {
         return (
             <>
                 <span className="p-column-title">Code</span>
@@ -215,35 +214,27 @@ const Resource = () => {
         );
     };
 
-    const nameBodyTemplate = (rowData: Zero.Resource) => {
+    const descriptionBodyTemplate = (rowData: Zero.Profile) => {
         return (
             <>
-                <span className="p-column-title">Name</span>
-                {rowData.name}
-            </>
-        );
-    };
-    const keyBodyTemplate = (rowData: Zero.Resource) => {
-        return (
-            <>
-                <span className="p-column-title">Key</span>
-                {rowData.key}
+                <span className="p-column-title">Description</span>
+                {rowData.description}
             </>
         );
     };
 
-    const actionBodyTemplate = (rowData: Zero.Resource) => {
+    const actionBodyTemplate = (rowData: Zero.Profile) => {
         return (
             <>
-                <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" onClick={() => editResource(rowData)} />
-                <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeleteResource(rowData)} />
+                <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" onClick={() => editProfile(rowData)} />
+                <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeletedProfile(rowData)} />
             </>
         );
     };
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Manage Resource</h5>
+            <h5 className="m-0">Manage Profile</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onInput={(e) => setGlobalFilter(e.currentTarget.value)} placeholder="Search..." />
@@ -251,22 +242,22 @@ const Resource = () => {
         </div>
     );
 
-    const resourceDialogFooter = (
+    const profileDialogFooter = (
         <>
             <Button label="Cancel" icon="pi pi-times" text onClick={hideDialog} />
-            <Button label="Save" icon="pi pi-check" text onClick={saveResource} />
+            <Button label="Save" icon="pi pi-check" text onClick={saveProfile} />
         </>
     );
-    const deleteResourceDialogFooter = (
+    const deleteProfileDialogFooter = (
         <>
-            <Button label="No" icon="pi pi-times" text onClick={hideDeleteResouceDialog} />
-            <Button label="Yes" icon="pi pi-check" text onClick={deleteResource} />
+            <Button label="No" icon="pi pi-times" text onClick={hideDeleteProfileDialog} />
+            <Button label="Yes" icon="pi pi-check" text onClick={deleteProfile} />
         </>
     );
-    const deleteResourcesDialogFooter = (
+    const deleteProfilesDialogFooter = (
         <>
-            <Button label="No" icon="pi pi-times" text onClick={hideDeleteResourcesDialog} />
-            <Button label="Yes" icon="pi pi-check" text onClick={deleteSelectedResources} />
+            <Button label="No" icon="pi pi-times" text onClick={hideDeleteProfilesDialog} />
+            <Button label="Yes" icon="pi pi-check" text onClick={deleteSelectedProfile} />
         </>
     );
 
@@ -279,75 +270,60 @@ const Resource = () => {
 
                     <DataTable
                         ref={dt}
-                        value={resources}
-                        selection={selectedResources}
-                        onSelectionChange={(e) => setSelectedResources(e.value as any)}
+                        value={profiles}
+                        selection={selectedProfiles}
+                        onSelectionChange={(e) => setSelectedProfiles(e.value as any)}
                         dataKey="id"
                         paginator
                         rows={10}
                         rowsPerPageOptions={[5, 10, 25]}
                         className="datatable-responsive"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} resources"
+                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} profiles"
                         globalFilter={globalFilter}
-                        emptyMessage="No resource found."
+                        emptyMessage="No profile found."
                         header={header}
                         responsiveLayout="scroll"
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
                         <Column field="id" header="Code" sortable body={idBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
-                        <Column field="name" header="Name" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
-                        <Column field="key" header="Key" body={keyBodyTemplate} sortable headerStyle={{ minWidth: '15rem' }}></Column>
+                        <Column field="description" header="Description" sortable body={descriptionBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
 
                         <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
 
-                    <Dialog visible={resourceDialog} style={{ width: '450px' }} header="Resource Details" modal className="p-fluid" footer={resourceDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={profileDialog} style={{ width: '450px' }} header="Profile Details" modal className="p-fluid" footer={profileDialogFooter} onHide={hideDialog}>
                         <div className="field">
-                            <label htmlFor="name">Name</label>
+                            <label htmlFor="description">Description</label>
                             <InputText
-                                id="name"
-                                value={resource.name}
-                                onChange={(e) => onInputChange(e, 'name')}
+                                id="description"
+                                value={profile.description}
+                                onChange={(e) => onInputChange(e, 'description')}
                                 required
                                 autoFocus
                                 className={classNames({
-                                    'p-invalid': submitted && !resource.name
+                                    'p-invalid': submitted && !profile.description
                                 })}
                             />
-                            {submitted && !resource.name && <small className="p-invalid">Name is required.</small>}
-                        </div>
-                        <div className="field">
-                            <label htmlFor="key">Key</label>
-                            <InputText
-                                id="key"
-                                value={resource.key}
-                                onChange={(e) => onInputChange(e, 'key')}
-                                required
-                                autoFocus
-                                className={classNames({
-                                    'p-invalid': submitted && !resource.key
-                                })}
-                            />
-                            {submitted && !resource.key && <small className="p-invalid">Key is required.</small>}
+                            {submitted && !profile.description && <small className="p-invalid">Description is required.</small>}
                         </div>
                     </Dialog>
 
-                    <Dialog visible={deleteResourceDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteResourceDialogFooter} onHide={hideDeleteResouceDialog}>
+                    <Dialog visible={deleteProfileDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProfileDialogFooter} onHide={hideDeleteProfileDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {resource && (
+                            {profile && (
                                 <span>
-                                    Are you sure you want to delete <b>{resource.name}</b>?
+                                    Are you sure you want to delete <b>{profile.description}</b>?
                                 </span>
                             )}
                         </div>
                     </Dialog>
 
-                    <Dialog visible={deleteResourcesDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteResourcesDialogFooter} onHide={hideDeleteResourcesDialog}>
+                    <Dialog visible={deleteProfilesDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProfilesDialogFooter} onHide={hideDeleteProfilesDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {resource && <span>Are you sure you want to delete the selected resources?</span>}
+                            {profile && <span>Are you sure you want to delete the selected descriptions?</span>}
                         </div>
                     </Dialog>
                 </div>
@@ -356,4 +332,4 @@ const Resource = () => {
     );
 };
 
-export default Resource;
+export default Profile;
