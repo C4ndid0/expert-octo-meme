@@ -37,7 +37,7 @@ public class ProfileController
         return profileService.updateProfile(profile);
     }
 
-    @DeleteMapping
+    @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteProfile(@PathVariable Long id){
         profileService.deleteProfile(id);
         return ResponseEntity.ok().build();
