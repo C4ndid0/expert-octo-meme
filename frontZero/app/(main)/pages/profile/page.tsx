@@ -20,7 +20,7 @@ const Profile = () => {
         description: ''
     };
 
-    const [profiles, setProfiles] = useState<Zero.Profile[]>([]);
+    const [profiles, setProfiles] = useState<Zero.Profile[] | null>(null);
     const [profileDialog, setProfileDialog] = useState(false);
     const [deleteProfileDialog, setDeleteProfileDialog] = useState(false);
     const [deleteProfilesDialog, setDeleteProfilesDialog] = useState(false);
@@ -33,7 +33,7 @@ const Profile = () => {
     const profileService = useMemo(() => new ProfileService(), []);
 
     useEffect(() => {
-        if (profiles.length === 0) {
+        if (!profiles) {
             profileService
                 .listAll()
                 .then((response) => {
@@ -72,7 +72,7 @@ const Profile = () => {
                 .then((response) => {
                     setProfileDialog(false);
                     setProfile(emptyProfile);
-                    setProfiles([]);
+                    setProfiles(null);
                     toast.current?.show({
                         severity: 'success',
                         summary: 'Successful',
@@ -93,7 +93,7 @@ const Profile = () => {
                 .then((response) => {
                     setProfileDialog(false);
                     setProfile(emptyProfile);
-                    setProfiles([]);
+                    setProfiles(null);
                     toast.current?.show({
                         severity: 'success',
                         summary: 'Successful',
@@ -127,7 +127,7 @@ const Profile = () => {
         profileService
             .delete(profile.id)
             .then((response) => {
-                setProfiles([]);
+                setProfiles(null);
                 toast.current?.show({
                     severity: 'success',
                     summary: 'Successful',
@@ -160,7 +160,7 @@ const Profile = () => {
             })
         )
             .then((response) => {
-                setProfiles([]);
+                setProfiles(null);
                 setSelectedProfiles([]);
                 setDeleteProfilesDialog(false);
                 toast.current?.show({

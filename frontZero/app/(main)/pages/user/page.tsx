@@ -23,7 +23,7 @@ const User = () => {
         email: ''
     };
 
-    const [users, setUsers] = useState<Zero.User[]>([]);
+    const [users, setUsers] = useState<Zero.User[] | null>(null);
     const [userDialog, setUserDialog] = useState(false);
     const [deleteUserDialog, setDeleteUserDialog] = useState(false);
     const [deleteUsersDialog, setDeleteUsersDialog] = useState(false);
@@ -36,7 +36,7 @@ const User = () => {
     const userService = useMemo(() => new UserService(), []);
 
     useEffect(() => {
-        if (users.length === 0) {
+        if (!users) {
             userService
                 .listAll()
                 .then((response) => {
@@ -75,7 +75,7 @@ const User = () => {
                 .then((response) => {
                     setUserDialog(false);
                     setUser(emptyUser);
-                    setUsers([]);
+                    setUsers(null);
                     toast.current?.show({
                         severity: 'success',
                         summary: 'Successful',
@@ -96,7 +96,7 @@ const User = () => {
                 .then((response) => {
                     setUserDialog(false);
                     setUser(emptyUser);
-                    setUsers([]);
+                    setUsers(null);
                     toast.current?.show({
                         severity: 'success',
                         summary: 'Successful',
@@ -130,7 +130,7 @@ const User = () => {
         userService
             .delete(user.id)
             .then((response) => {
-                setUsers([]);
+                setUsers(null);
                 toast.current?.show({
                     severity: 'success',
                     summary: 'Successful',
@@ -163,7 +163,7 @@ const User = () => {
             })
         )
             .then((response) => {
-                setUsers([]);
+                setUsers(null);
                 setSelectedUsers([]);
                 setDeleteUsersDialog(false);
                 toast.current?.show({
