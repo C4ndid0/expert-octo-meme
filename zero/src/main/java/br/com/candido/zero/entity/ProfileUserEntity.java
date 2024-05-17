@@ -1,3 +1,5 @@
+package br.com.candido.zero.entity;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,4 +28,5 @@ public class ProfileUserEntity {
   @ManyToOne
   @JoinColumn(name = "ID_PROFILE")
   private ProfileEntity profile;
+
 }
