@@ -1,2 +1,7 @@
-package com.br.candido.model;public interface FuncionarioFactory {
+package com.br.candido.model;
+
+import java.time.YearMonth;
+
+public interface FuncionarioFactory {
+    Funcionario criarFuncionario(String nome, YearMonth dataDeContratacao);
 }
