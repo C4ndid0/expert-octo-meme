@@ -21,4 +21,5 @@ public class ProfileDTO {
     public ProfileDTO(ProfileEntity profileEntity) {
         BeanUtils.copyProperties(profileEntity, this);
     }
+
 }

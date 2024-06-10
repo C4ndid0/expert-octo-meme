@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "ZERO_PROFILE_USER_")
+@Table(name = "ZERO_USER_PROFILE")
 @Getter
 @Setter
 @NoArgsConstructor
