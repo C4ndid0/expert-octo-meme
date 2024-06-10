@@ -1,9 +1,10 @@
 package br.com.candido.zero.entity;
 
-import br.com.candido.zero.dto.ProfileDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.beans.BeanUtils;
+
+import br.com.candido.zero.dto.ProfileDTO;
 
 @Entity
 @Table(name = "ZERO_PROFILE")
@@ -20,6 +21,6 @@ public class ProfileEntity {
     private String description;
 
     public ProfileEntity(ProfileDTO profileDTO) {
-        BeanUtils.copyProperties(profileDTO,this);
+        BeanUtils.copyProperties(profileDTO, this);
     }
 }
