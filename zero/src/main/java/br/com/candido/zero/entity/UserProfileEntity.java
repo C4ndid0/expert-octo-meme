@@ -1,5 +1,8 @@
 package br.com.candido.zero.entity;
 
+import org.springframework.beans.BeanUtils;
+
+import br.com.candido.zero.dto.UserProfileDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProfileUserEntity {
+public class UserProfileEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,5 +31,15 @@ public class ProfileUserEntity {
   @ManyToOne
   @JoinColumn(name = "ID_PROFILE")
   private ProfileEntity profile;
+
+  public UserProfileEntity(UserProfileDTO userProfile) {
+    BeanUtils.copyProperties(userProfile, this);
+    if (userProfile != null && userProfile.getUser() != null) {
+      this.user = new UserEntity(userProfile.getUser());
+    }
+    if (userProfile != null && userProfile.getProfile() != null) {
+      this.profile = new ProfileEntity(userProfile.getProfile());
+    }
+  }
 
 }
