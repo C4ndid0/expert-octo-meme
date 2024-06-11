@@ -1,6 +1,6 @@
 declare namespace Zero {
     type User = {
-        id: number;
+        id?: number;
         name: string;
         login: string;
         password: string;
@@ -8,14 +8,20 @@ declare namespace Zero {
     };
 
     type Resource = {
-        id: number;
+        id?: number;
         name: string;
         key: string;
     };
 
     type Profile = {
-        id: number;
+        id?: number;
         description: string;
+    }
+
+    type UserProfile = {
+        id: number;
+        profile: Profile;
+        user: User;
     }
 
 
